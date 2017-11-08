@@ -6,6 +6,7 @@ from django.core.files.base import ContentFile
 from django.core.exceptions import ValidationError, ObjectDoesNotExist
 from django.utils.safestring import mark_safe
 from django.utils.functional import cached_property
+from django.utils import timezone
 from django.db import models
 from django.db.models import Avg, Min, Max, Count, Sum, F
 from django.db.models.fields import FieldDoesNotExist
@@ -88,6 +89,14 @@ class Report(models.Model):
         AUTH_USER_MODEL, blank=True,
         help_text="These users have starred this report for easy reference.",
         related_name="report_starred_set")
+    chart_style = models.CharField(max_length=16, null=True, blank=True)
+    chart_type = models.IntegerField(null=True, blank=True)
+    chart_categories = models.CommaSeparatedIntegerField(max_length=64, null=True, blank=True)
+    chart_series = models.CommaSeparatedIntegerField(max_length=64, null=True, blank=True)
+    chart_values = models.CommaSeparatedIntegerField(max_length=64, null=True, blank=True)
+    chart_stacked = models.BooleanField(default=False)
+    chart_labels = models.BooleanField(default=False)
+    chart_total = models.BooleanField(default=False)
 
     def __str__(self):
         return self.name
@@ -438,7 +447,7 @@ class Report(models.Model):
                                                header, widths)
             title = generate_filename(title, '.xlsx')
             self.report_file.save(title, ContentFile(xlsx_file.getvalue()))
-        self.report_file_creation = datetime.datetime.today()
+        self.report_file_creation = timezone.now().date()
         self.save()
         if email_to:
             for email in email_to:
@@ -546,7 +555,7 @@ class DisplayField(AbstractField):
 
     def get_choices(self, model, field_name):
         try:
-            model_field = model._meta.get_field_by_name(field_name)[0]
+            model_field = model._meta.get_field(field_name)
         except:
             model_field = None
         if model_field and model_field.choices:
@@ -616,7 +625,7 @@ class FilterField(AbstractField):
 
     def get_choices(self, model, field_name):
         try:
-            model_field = model._meta.get_field_by_name(field_name)[0]
+            model_field = model._meta.get_field(field_name)
         except:
             model_field = None
         if model_field and model_field.choices:

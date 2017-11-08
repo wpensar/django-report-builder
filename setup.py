@@ -8,7 +8,7 @@ setup(
     description=("Query and Report builder for Django ORM"),
     license="BSD",
     keywords="django report",
-    url="https://gitlab.com/burke-software/django-report-builder",
+    url="https://github.com/burke-software/django-report-builder",
     packages=find_packages(),
     include_package_data=True,
     classifiers=[
@@ -24,7 +24,8 @@ setup(
     python_requires='>=3.3',
     install_requires=[
         'openpyxl >= 2.2.1',
-        'python-dateutil',
+        'python-dateutil==2.5.3',
+        'django-report-utils>=0.3.15',
         'djangorestframework>=3.1.0',
         "six"
     ]

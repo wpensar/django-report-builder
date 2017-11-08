@@ -71,7 +71,7 @@ class UtilityFunctionTests(TestCase):
         self.assertTrue('description' in names)
         self.assertTrue('distinct' in names)
         self.assertTrue('id' in names)
-        self.assertEquals(len(names), 9)
+        self.assertEquals(len(names), 17)
 
     def test_get_fields(self):
         """ Test GetFieldsMixin.get_fields """
